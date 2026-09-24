@@ -175,6 +175,9 @@ function splitSpeech(text){
   return out;
 }
 const PAUSE = {comma:260, dash:320, colon:420, end:620, q:680, x:600};
+Object.assign(S, {nvTitle:L('No voice for this language on this device','Nu există o voce în limba română pe acest dispozitiv'),
+  nvBody:L('The lesson continues with text only. To hear the teacher, open Atom Bench in Microsoft Edge (it has natural online voices), or add a voice for this language in your device’s speech settings.','Lecția continuă doar cu text, ca Profesoara Iona să nu citească româna cu o voce englezească. Ca s-o auzi, deschide Atom Bench în Microsoft Edge (are voci românești naturale, de exemplu Alina), sau adaugă limba română în setările de vorbire ale dispozitivului (Windows: Setări → Oră și limbă → Vorbire → Adaugă voci → Română).'),
+  nvOk:L('OK','Am înțeles')});
 let SPEAK_ID = 0;
 // ---------- natural voice (ElevenLabs via the website's /api/tts endpoint) ----------
 // Only available when the app runs on its own website (Cloudflare Worker holds the key). Falls back to the browser voice.
@@ -186,10 +189,19 @@ function ttsClean(text){ return text.replace(/<[^>]+>/g, '').replace(/\s+/g, ' '
 function ttsUrl(text, lang){ return '/api/tts?lang=' + (lang || (LANG === 'ro' ? 'ro' : 'en')) + '&t=' + encodeURIComponent(ttsClean(text)); }
 function ttsPrefetch(text){ if(!naturalOn() || !EL_TTS.cache || !text || !USER_GESTURE) return; try{ fetch(ttsUrl(text)).catch(() => {}); }catch(e){} }
 try{ if(NATURAL_VOICE && /^https?:$/.test(location.protocol) && !/claude\.ai|claudeusercontent|anthropic/.test(location.hostname)) fetch('/api/health').then(r => r.ok ? r.json() : null).then(j => { if(j && j.tts){ EL_TTS.ok = true; EL_TTS.cache = !!j.cache; } }).catch(() => {}); }catch(e){}
+// true when this device has a voice for the current language (never read Romanian with an English voice)
+function langVoiceOK(){ if(naturalOn()) return true; if(!window.speechSynthesis) return false; loadVoices(); if(!VOICES.length) return true; return voicesFor(LANG === 'ro' ? 'ro' : 'en').length > 0; }
+function noVoiceNotice(){
+  if(noVoiceNotice.shown === LANG) return; noVoiceNotice.shown = LANG;
+  let el = document.getElementById('noVoice'); if(!el){ el = document.createElement('div'); el.id = 'noVoice'; el.className = 'no-voice'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+  el.innerHTML = '<b>' + t('nvTitle') + '</b><p>' + t('nvBody') + '</p><button class="btn small" type="button">' + t('nvOk') + '</button>';
+  el.hidden = false; el.querySelector('button').onclick = () => { el.hidden = true; };
+}
 function speak(text, cb){
   if(!SPEAK || !text) return;
   if(naturalOn()) return speakNatural(text, cb);
   if(!window.speechSynthesis) return;
+  if(!langVoiceOK()){ noVoiceNotice(); if(cb && cb.end) setTimeout(cb.end, 0); return; }
   const id = ++SPEAK_ID; let started = false, ended = false;
   const onStart = () => { if(started || id !== SPEAK_ID) return; started = true; if(cb){ cb.start && cb.start(); } else setTalking(true); };
   const onEnd = () => { if(ended) return; ended = true; if(cb){ cb.end && cb.end(); } else if(id === SPEAK_ID) setTalking(false); };

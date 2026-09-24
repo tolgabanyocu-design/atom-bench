@@ -557,6 +557,10 @@ html.intro-lock,html.intro-lock body{overflow:hidden}
 @keyframes atomFlash{0%{box-shadow:0 0 0 0 rgba(233,130,28,.55)}100%{box-shadow:0 0 0 18px rgba(233,130,28,0)}}
 .atom-box.flash{animation:atomFlash 1s ease-out 2}
 @media (prefers-reduced-motion:reduce){.atom-box.flash{animation:none}}
+/* ---- no voice notice ---- */
+.no-voice{position:fixed;z-index:70;right:16px;bottom:16px;max-width:360px;background:#fff;border:1px solid var(--line);border-left:5px solid var(--flame,#E9821C);border-radius:14px;box-shadow:0 14px 40px rgba(15,40,55,.2);padding:12px 14px}
+.no-voice b{font-family:var(--display);font-weight:600;font-size:16px}.no-voice p{margin:6px 0 10px;font-size:13.5px;line-height:1.45;font-weight:600;color:var(--muted)}
+@media (max-width:760px){.no-voice{left:10px;right:10px;bottom:10px;max-width:none}}
 </style>
 <div class="app">
   <header class="topbar">
@@ -6427,6 +6431,9 @@ function splitSpeech(text){
   return out;
 }
 const PAUSE = {comma:260, dash:320, colon:420, end:620, q:680, x:600};
+Object.assign(S, {nvTitle:L('No voice for this language on this device','Nu există o voce în limba română pe acest dispozitiv'),
+  nvBody:L('The lesson continues with text only. To hear the teacher, open Atom Bench in Microsoft Edge (it has natural online voices), or add a voice for this language in your device’s speech settings.','Lecția continuă doar cu text, ca Profesoara Iona să nu citească româna cu o voce englezească. Ca s-o auzi, deschide Atom Bench în Microsoft Edge (are voci românești naturale, de exemplu Alina), sau adaugă limba română în setările de vorbire ale dispozitivului (Windows: Setări → Oră și limbă → Vorbire → Adaugă voci → Română).'),
+  nvOk:L('OK','Am înțeles')});
 let SPEAK_ID = 0;
 // ---------- natural voice (ElevenLabs via the website's /api/tts endpoint) ----------
 // Only available when the app runs on its own website (Cloudflare Worker holds the key). Falls back to the browser voice.
@@ -6438,10 +6445,19 @@ function ttsClean(text){ return text.replace(/<[^>]+>/g, '').replace(/\s+/g, ' '
 function ttsUrl(text, lang){ return '/api/tts?lang=' + (lang || (LANG === 'ro' ? 'ro' : 'en')) + '&t=' + encodeURIComponent(ttsClean(text)); }
 function ttsPrefetch(text){ if(!naturalOn() || !EL_TTS.cache || !text || !USER_GESTURE) return; try{ fetch(ttsUrl(text)).catch(() => {}); }catch(e){} }
 try{ if(NATURAL_VOICE && /^https?:$/.test(location.protocol) && !/claude\.ai|claudeusercontent|anthropic/.test(location.hostname)) fetch('/api/health').then(r => r.ok ? r.json() : null).then(j => { if(j && j.tts){ EL_TTS.ok = true; EL_TTS.cache = !!j.cache; } }).catch(() => {}); }catch(e){}
+// true when this device has a voice for the current language (never read Romanian with an English voice)
+function langVoiceOK(){ if(naturalOn()) return true; if(!window.speechSynthesis) return false; loadVoices(); if(!VOICES.length) return true; return voicesFor(LANG === 'ro' ? 'ro' : 'en').length > 0; }
+function noVoiceNotice(){
+  if(noVoiceNotice.shown === LANG) return; noVoiceNotice.shown = LANG;
+  let el = document.getElementById('noVoice'); if(!el){ el = document.createElement('div'); el.id = 'noVoice'; el.className = 'no-voice'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+  el.innerHTML = '<b>' + t('nvTitle') + '</b><p>' + t('nvBody') + '</p><button class="btn small" type="button">' + t('nvOk') + '</button>';
+  el.hidden = false; el.querySelector('button').onclick = () => { el.hidden = true; };
+}
 function speak(text, cb){
   if(!SPEAK || !text) return;
   if(naturalOn()) return speakNatural(text, cb);
   if(!window.speechSynthesis) return;
+  if(!langVoiceOK()){ noVoiceNotice(); if(cb && cb.end) setTimeout(cb.end, 0); return; }
   const id = ++SPEAK_ID; let started = false, ended = false;
   const onStart = () => { if(started || id !== SPEAK_ID) return; started = true; if(cb){ cb.start && cb.start(); } else setTalking(true); };
   const onEnd = () => { if(ended) return; ended = true; if(cb){ cb.end && cb.end(); } else if(id === SPEAK_ID) setTalking(false); };
@@ -6912,7 +6928,7 @@ function renderLesson(){
 }
 function speakingNow(){ try{ return !!(window.speechSynthesis && speechSynthesis.speaking); }catch(e){ return false; } }
 function readingMs(txt){ return Math.max(6500, txt.length*62 + 2500); }
-function canSpeak(){ return SPEAK && !!window.speechSynthesis && USER_GESTURE; }
+function canSpeak(){ const ok = SPEAK && !!window.speechSynthesis && USER_GESTURE; if(ok && typeof langVoiceOK === 'function' && !langVoiceOK()){ noVoiceNotice(); return false; } return ok; }
 function narrate(){
   clearTimeout(CR.timer); clearTimeout(CR.fallback); CR.token++; const tok = CR.token;
   if(TAB !== 'course' || CR.mode !== 'slides') return;

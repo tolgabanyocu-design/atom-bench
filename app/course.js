@@ -386,7 +386,7 @@ function renderLesson(){
 }
 function speakingNow(){ try{ return !!(window.speechSynthesis && speechSynthesis.speaking); }catch(e){ return false; } }
 function readingMs(txt){ return Math.max(6500, txt.length*62 + 2500); }
-function canSpeak(){ return SPEAK && !!window.speechSynthesis && USER_GESTURE; }
+function canSpeak(){ const ok = SPEAK && !!window.speechSynthesis && USER_GESTURE; if(ok && typeof langVoiceOK === 'function' && !langVoiceOK()){ noVoiceNotice(); return false; } return ok; }
 function narrate(){
   clearTimeout(CR.timer); clearTimeout(CR.fallback); CR.token++; const tok = CR.token;
   if(TAB !== 'course' || CR.mode !== 'slides') return;
