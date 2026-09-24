@@ -1,11 +1,11 @@
 // ===================== teacher voice settings =====================
 Object.assign(S, {
-  voiceBtn:L('Voice','Voce'), vTitle:L('The teacher’s voice','Vocea profesoarei'), vVoice:L('Voice','Voce'), vLively:L('Speaking style','Stil de vorbire'),
+  voiceBtn:L('Voice','Voce'), vTitle:L('The teacher’s voice','Vocea profesorului'), vVoice:L('Voice','Voce'), vLively:L('Speaking style','Stil de vorbire'),
   vCalm:L('Calm','Calm'), vLivelyOpt:L('Lively','Energic'), vVery:L('Very lively','Foarte energic'), vSpeed:L('Speed','Viteză'), vTest:L('Test the voice','Testează vocea'),
-  vNatural:L('Natural voice (ElevenLabs)','Voce naturală (ElevenLabs)'), vNaturalB:L('Professor Ion speaks with George’s voice, Profesoara Iona with Matilda’s. It may take a second to start.','Profesorul Ion vorbește cu vocea lui George, Profesoara Iona cu vocea Matildei. Poate dura o secundă până începe.'), vOn:L('On','Pornit'), vOff:L('Off','Oprit'),
+  vNatural:L('Natural voice (ElevenLabs)','Voce naturală (ElevenLabs)'), vNaturalB:L('Professor Ion speaks with George’s voice in English and Matilda’s in Romanian. It may take a second to start.','Profesorul Ion vorbește cu vocea lui George în engleză și a Matildei în română. Poate dura o secundă până începe.'), vOn:L('On','Pornit'), vOff:L('Off','Oprit'),
   vBest:L('best','cea mai bună'), vNone:L('No voice for this language is installed on this device.','Pe acest dispozitiv nu este instalată nicio voce pentru această limbă.'),
   vTip:L('Tip: the most natural voices are the “Natural” or “Online” voices in Microsoft Edge (for example Ryan or Alina) and the Google voices in Chrome. Voices come from your browser and device.','Sfat: cele mai naturale voci sunt vocile „Natural” sau „Online” din Microsoft Edge (de exemplu Alina sau Emil) și vocile Google din Chrome. Vocile vin din browserul și dispozitivul tău.'),
-  vSample:L('Hello! I’m Professor Ion. Chemistry is everywhere around us, and today we’re going to discover something amazing! Are you ready?','Bună! Eu sunt Profesoara Iona. Chimia este peste tot în jurul nostru, iar azi vom descoperi ceva uimitor! Ești gata?'),
+  vSample:L('Hello! I’m Professor Ion. Chemistry is everywhere around us, and today we’re going to discover something amazing! Are you ready?','Bună! Eu sunt Profesorul Ion. Chimia este peste tot în jurul nostru, iar azi vom descoperi ceva uimitor! Ești gata?'),
 });
 function renderVoicePanel(){
   const el = $('#voicePanel'); const want = LANG === 'ro' ? 'ro' : 'en'; loadVoices(); const list = voicesFor(want); const cur = pickVoice();

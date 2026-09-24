@@ -1,6 +1,6 @@
 // ===================== Ask Professor =====================
 Object.assign(S, {
-  askProf:L('Ask Professor','Întreab-o pe Profesoară'),
+  askProf:L('Ask Professor','Întreabă-l pe Profesor'),
   cleanNote:L('This mission starts with a clean, empty beaker. The Start button washes it for you.','Misiunea începe cu un pahar curat și gol. Butonul Start îl spală pentru tine.'),
   startMission:L('Start mission','Începe misiunea'), cleanStart:L('Wash beaker & start','Spală paharul și începe'),
   restart:L('Restart (wash beaker)','Reia (spală paharul)'), playAgain:L('Play again','Joacă din nou'),
@@ -26,7 +26,7 @@ Object.assign(S, {
   profTryNone:L('You’ve found everything I know with these substances! Wash the beaker and explore the shelf.','Ai descoperit tot ce știu cu aceste substanțe! Spală paharul și explorează raftul.'),
   profBurner:L('then light the burner','apoi aprinde arzătorul'),
   profWelcomeT:L('Welcome to my lab!','Bun venit în laboratorul meu!'),
-  profWelcome:L('I’m Professor Ion. Everything around you, the air, the water and even you, is made of tiny atoms. In this lab you can mix substances and watch what happens. When something changes, tap me and I’ll explain it step by step.','Eu sunt Profesoara Iona. Tot ce e în jurul tău, aerul, apa și chiar tu, e făcut din atomi minusculi. În acest laborator poți amesteca substanțe și poți privi ce se întâmplă. Când se schimbă ceva, atinge-mă și îți explic pas cu pas.'),
+  profWelcome:L('I’m Professor Ion. Everything around you, the air, the water and even you, is made of tiny atoms. In this lab you can mix substances and watch what happens. When something changes, tap me and I’ll explain it step by step.','Eu sunt Profesorul Ion. Tot ce e în jurul tău, aerul, apa și chiar tu, e făcut din atomi minusculi. În acest laborator poți amesteca substanțe și poți privi ce se întâmplă. Când se schimbă ceva, atinge-mă și îți explic pas cu pas.'),
   profMission:L('Your mission right now:','Misiunea ta acum:'),
   profAbout:L('About {name}','Despre {name}'),
   profInfoMore:L('Every substance has its own personality. Some are calm, some are very reactive. Add a second one and let’s see if they get along!','Fiecare substanță are personalitatea ei. Unele sunt liniștite, altele foarte reactive. Adaugă încă una și hai să vedem dacă se înțeleg!'),
@@ -176,7 +176,7 @@ function splitSpeech(text){
 }
 const PAUSE = {comma:260, dash:320, colon:420, end:620, q:680, x:600};
 Object.assign(S, {nvTitle:L('No voice for this language on this device','Nu există o voce în limba română pe acest dispozitiv'),
-  nvBody:L('The lesson continues with text only. To hear the teacher, open Atom Bench in Microsoft Edge (it has natural online voices), or add a voice for this language in your device’s speech settings.','Lecția continuă doar cu text, ca Profesoara Iona să nu citească româna cu o voce englezească. Ca s-o auzi, deschide Atom Bench în Microsoft Edge (are voci românești naturale, de exemplu Alina), sau adaugă limba română în setările de vorbire ale dispozitivului (Windows: Setări → Oră și limbă → Vorbire → Adaugă voci → Română).'),
+  nvBody:L('The lesson continues with text only. To hear the teacher, open Atom Bench in Microsoft Edge (it has natural online voices), or add a voice for this language in your device’s speech settings.','Lecția continuă doar cu text, ca profesorul să nu citească româna cu o voce englezească. Ca să-l auzi, deschide Atom Bench în Microsoft Edge (are voci românești naturale, de exemplu Alina), sau adaugă limba română în setările de vorbire ale dispozitivului (Windows: Setări → Oră și limbă → Vorbire → Adaugă voci → Română).'),
   nvOk:L('OK','Am înțeles')});
 let SPEAK_ID = 0;
 // ---------- natural voice (ElevenLabs via the website's /api/tts endpoint) ----------
@@ -190,8 +190,11 @@ function ttsUrl(text, lang){ return '/api/tts?lang=' + (lang || (LANG === 'ro' ?
 function ttsPrefetch(text){ if(!naturalOn() || !EL_TTS.cache || !text || !USER_GESTURE) return; try{ fetch(ttsUrl(text)).catch(() => {}); }catch(e){} }
 try{ if(NATURAL_VOICE && /^https?:$/.test(location.protocol) && !/claude\.ai|claudeusercontent|anthropic/.test(location.hostname)) fetch('/api/health').then(r => r.ok ? r.json() : null).then(j => { if(j && j.tts){ EL_TTS.ok = true; EL_TTS.cache = !!j.cache; } }).catch(() => {}); }catch(e){}
 // true when this device has a voice for the current language (never read Romanian with an English voice)
-function langVoiceOK(){ if(naturalOn()) return true; if(!window.speechSynthesis) return false; loadVoices(); if(!VOICES.length) return true; return voicesFor(LANG === 'ro' ? 'ro' : 'en').length > 0; }
+// The Romanian voice is switched off until a server voice (same for everyone) is ready.
+const RO_VOICE = false;
+function langVoiceOK(){ if(naturalOn()) return true; if(LANG === 'ro' && !RO_VOICE) return false; if(!window.speechSynthesis) return false; loadVoices(); if(!VOICES.length) return true; return voicesFor(LANG === 'ro' ? 'ro' : 'en').length > 0; }
 function noVoiceNotice(){
+  if(LANG === 'ro' && !RO_VOICE) return;
   if(noVoiceNotice.shown === LANG) return; noVoiceNotice.shown = LANG;
   let el = document.getElementById('noVoice'); if(!el){ el = document.createElement('div'); el.id = 'noVoice'; el.className = 'no-voice'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
   el.innerHTML = '<b>' + t('nvTitle') + '</b><p>' + t('nvBody') + '</p><button class="btn small" type="button">' + t('nvOk') + '</button>';
@@ -266,7 +269,7 @@ async function askProf(o){
   const lvl = ['Beginner (about age 8-11): very simple words, short sentences, no chemical formulas', 'Explorer (about age 11-14): simple science words like atoms, ions and word equations are fine', 'Scientist (age 14+): formulas and balanced equations are fine'][LEVEL];
   const contents = B.items.length ? [...new Set(B.items.map(i => SPECIES[i.id].n.en))].join(', ') : 'nothing (empty)';
   const last = LAST[0] && LAST[0].kind === 'rule' ? LAST[0].rule.title.en + ' - ' + (LAST[0].rule.e ? LAST[0].rule.e.en : '') : 'no reaction yet';
-  const prompt = (LANG === 'ro' ? 'You are Profesoara Iona, the warm, enthusiastic woman chemistry teacher character in "Atom Bench", a virtual chemistry lab for children. When you refer to yourself in Romanian, use feminine forms.' : 'You are Professor Ion, the warm, enthusiastic chemistry teacher character in "Atom Bench", a virtual chemistry lab for children.') + ' Answer the child\'s question.\n' +
+  const prompt = (LANG === 'ro' ? 'You are Profesorul Ion, the warm, enthusiastic chemistry teacher character in "Atom Bench", a virtual chemistry lab for children. When you refer to yourself in Romanian, use masculine forms.' : 'You are Professor Ion, the warm, enthusiastic chemistry teacher character in "Atom Bench", a virtual chemistry lab for children.') + ' Answer the child\'s question.\n' +
     'Rules:\n- Reply in ' + (LANG === 'ro' ? 'Romanian (with correct diacritics)' : 'English') + '.\n- Level: ' + lvl + '.\n- 2 to 5 short sentences. Be accurate and encouraging.\n' +
     '- Never give step-by-step instructions, amounts or sources for making fire, explosions, poisonous gases or dangerous substances at home. For lab-only chemicals, say only trained chemists do that in a real lab, and that this virtual lab is safe for trying.\n' +
     '- If the question is not about science, kindly steer back to chemistry.\n- Plain text only: no markdown, no lists, no emojis.\n\n' +

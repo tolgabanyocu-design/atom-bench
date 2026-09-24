@@ -54,7 +54,7 @@ const S = {
   nothingLeft:{en:'nothing, it was pure water!', ro:'nimic, era apă curată!'},
   and:{en:'and', ro:'și'},
   // professor lines
-  pGreet:{en:'Hi! I’m <b>Professor Ion</b>, named after the ions in chemistry! Let’s start with your first mission.', ro:'Salut! Eu sunt <b>Profesoara Iona</b>, ca ionii din chimie! Hai să începem cu prima misiune.'},
+  pGreet:{en:'Hi! I’m <b>Professor Ion</b>, named after the ions in chemistry! Let’s start with your first mission.', ro:'Salut! Eu sunt <b>Profesorul Ion</b>, ca ionii din chimie! Hai să începem cu prima misiune.'},
   pReact:[{en:'Whoa, did you see that?', ro:'Uau, ai văzut?'},{en:'Now <b>that</b> is chemistry!', ro:'<b>Asta</b> da chimie!'},{en:'Look closely at what changed!', ro:'Uită-te atent la ce s-a schimbat!'},{en:'New substances were made. Read below how!', ro:'S-au format substanțe noi. Citește mai jos cum!'}],
   pPhys:{en:'Something changed, but no new substance was made. Chemists call that a physical change.', ro:'Ceva s-a schimbat, dar nu s-a format o substanță nouă. Chimiștii numesc asta transformare fizică.'},
   pNone:{en:'Hmm, no reaction. That’s a result too! Read why below.', ro:'Hmm, nicio reacție. Și acesta e un rezultat! Citește mai jos de ce.'},

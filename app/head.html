@@ -379,8 +379,11 @@ button{font:inherit;color:inherit}
 @media (prefers-reduced-motion:reduce){ .ph-orbit2,.ph-eyes2{animation:none} }
 
 /* v4: teacher per language, lesson controls */
-html[lang="ro"] .masc{display:none}
-html:not([lang="ro"]) .fem{display:none}
+/* one teacher for now: Professor Ion in both languages */
+.fem{display:none}
+html[lang="ro"] #lessonSpeak,html[lang="ro"] #voiceBtn,html[lang="ro"] #profSpeak,html[lang="ro"] #tapHint{display:none!important}
+.intro-modal .t-iona{display:none!important}
+.intro-modal .ic-teacher.t-ion{grid-column:1/-1;justify-self:center;max-width:340px;width:100%}
 .lesson-box{position:relative}
 .skip-lab{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.94);box-shadow:0 2px 8px rgba(22,37,46,.12)}
 .skip-lab svg{width:16px;height:16px}

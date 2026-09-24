@@ -385,8 +385,11 @@ button{font:inherit;color:inherit}
 @media (prefers-reduced-motion:reduce){ .ph-orbit2,.ph-eyes2{animation:none} }
 
 /* v4: teacher per language, lesson controls */
-html[lang="ro"] .masc{display:none}
-html:not([lang="ro"]) .fem{display:none}
+/* one teacher for now: Professor Ion in both languages */
+.fem{display:none}
+html[lang="ro"] #lessonSpeak,html[lang="ro"] #voiceBtn,html[lang="ro"] #profSpeak,html[lang="ro"] #tapHint{display:none!important}
+.intro-modal .t-iona{display:none!important}
+.intro-modal .ic-teacher.t-ion{grid-column:1/-1;justify-self:center;max-width:340px;width:100%}
 .lesson-box{position:relative}
 .skip-lab{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.94);box-shadow:0 2px 8px rgba(22,37,46,.12)}
 .skip-lab svg{width:16px;height:16px}
@@ -942,7 +945,7 @@ const S = {
   nothingLeft:{en:'nothing, it was pure water!', ro:'nimic, era apă curată!'},
   and:{en:'and', ro:'și'},
   // professor lines
-  pGreet:{en:'Hi! I’m <b>Professor Ion</b>, named after the ions in chemistry! Let’s start with your first mission.', ro:'Salut! Eu sunt <b>Profesoara Iona</b>, ca ionii din chimie! Hai să începem cu prima misiune.'},
+  pGreet:{en:'Hi! I’m <b>Professor Ion</b>, named after the ions in chemistry! Let’s start with your first mission.', ro:'Salut! Eu sunt <b>Profesorul Ion</b>, ca ionii din chimie! Hai să începem cu prima misiune.'},
   pReact:[{en:'Whoa, did you see that?', ro:'Uau, ai văzut?'},{en:'Now <b>that</b> is chemistry!', ro:'<b>Asta</b> da chimie!'},{en:'Look closely at what changed!', ro:'Uită-te atent la ce s-a schimbat!'},{en:'New substances were made. Read below how!', ro:'S-au format substanțe noi. Citește mai jos cum!'}],
   pPhys:{en:'Something changed, but no new substance was made. Chemists call that a physical change.', ro:'Ceva s-a schimbat, dar nu s-a format o substanță nouă. Chimiștii numesc asta transformare fizică.'},
   pNone:{en:'Hmm, no reaction. That’s a result too! Read why below.', ro:'Hmm, nicio reacție. Și acesta e un rezultat! Citește mai jos de ce.'},
@@ -6256,7 +6259,7 @@ function renderMolUI(){
 
 // ===================== Ask Professor =====================
 Object.assign(S, {
-  askProf:L('Ask Professor','Întreab-o pe Profesoară'),
+  askProf:L('Ask Professor','Întreabă-l pe Profesor'),
   cleanNote:L('This mission starts with a clean, empty beaker. The Start button washes it for you.','Misiunea începe cu un pahar curat și gol. Butonul Start îl spală pentru tine.'),
   startMission:L('Start mission','Începe misiunea'), cleanStart:L('Wash beaker & start','Spală paharul și începe'),
   restart:L('Restart (wash beaker)','Reia (spală paharul)'), playAgain:L('Play again','Joacă din nou'),
@@ -6282,7 +6285,7 @@ Object.assign(S, {
   profTryNone:L('You’ve found everything I know with these substances! Wash the beaker and explore the shelf.','Ai descoperit tot ce știu cu aceste substanțe! Spală paharul și explorează raftul.'),
   profBurner:L('then light the burner','apoi aprinde arzătorul'),
   profWelcomeT:L('Welcome to my lab!','Bun venit în laboratorul meu!'),
-  profWelcome:L('I’m Professor Ion. Everything around you, the air, the water and even you, is made of tiny atoms. In this lab you can mix substances and watch what happens. When something changes, tap me and I’ll explain it step by step.','Eu sunt Profesoara Iona. Tot ce e în jurul tău, aerul, apa și chiar tu, e făcut din atomi minusculi. În acest laborator poți amesteca substanțe și poți privi ce se întâmplă. Când se schimbă ceva, atinge-mă și îți explic pas cu pas.'),
+  profWelcome:L('I’m Professor Ion. Everything around you, the air, the water and even you, is made of tiny atoms. In this lab you can mix substances and watch what happens. When something changes, tap me and I’ll explain it step by step.','Eu sunt Profesorul Ion. Tot ce e în jurul tău, aerul, apa și chiar tu, e făcut din atomi minusculi. În acest laborator poți amesteca substanțe și poți privi ce se întâmplă. Când se schimbă ceva, atinge-mă și îți explic pas cu pas.'),
   profMission:L('Your mission right now:','Misiunea ta acum:'),
   profAbout:L('About {name}','Despre {name}'),
   profInfoMore:L('Every substance has its own personality. Some are calm, some are very reactive. Add a second one and let’s see if they get along!','Fiecare substanță are personalitatea ei. Unele sunt liniștite, altele foarte reactive. Adaugă încă una și hai să vedem dacă se înțeleg!'),
@@ -6432,7 +6435,7 @@ function splitSpeech(text){
 }
 const PAUSE = {comma:260, dash:320, colon:420, end:620, q:680, x:600};
 Object.assign(S, {nvTitle:L('No voice for this language on this device','Nu există o voce în limba română pe acest dispozitiv'),
-  nvBody:L('The lesson continues with text only. To hear the teacher, open Atom Bench in Microsoft Edge (it has natural online voices), or add a voice for this language in your device’s speech settings.','Lecția continuă doar cu text, ca Profesoara Iona să nu citească româna cu o voce englezească. Ca s-o auzi, deschide Atom Bench în Microsoft Edge (are voci românești naturale, de exemplu Alina), sau adaugă limba română în setările de vorbire ale dispozitivului (Windows: Setări → Oră și limbă → Vorbire → Adaugă voci → Română).'),
+  nvBody:L('The lesson continues with text only. To hear the teacher, open Atom Bench in Microsoft Edge (it has natural online voices), or add a voice for this language in your device’s speech settings.','Lecția continuă doar cu text, ca profesorul să nu citească româna cu o voce englezească. Ca să-l auzi, deschide Atom Bench în Microsoft Edge (are voci românești naturale, de exemplu Alina), sau adaugă limba română în setările de vorbire ale dispozitivului (Windows: Setări → Oră și limbă → Vorbire → Adaugă voci → Română).'),
   nvOk:L('OK','Am înțeles')});
 let SPEAK_ID = 0;
 // ---------- natural voice (ElevenLabs via the website's /api/tts endpoint) ----------
@@ -6446,8 +6449,11 @@ function ttsUrl(text, lang){ return '/api/tts?lang=' + (lang || (LANG === 'ro' ?
 function ttsPrefetch(text){ if(!naturalOn() || !EL_TTS.cache || !text || !USER_GESTURE) return; try{ fetch(ttsUrl(text)).catch(() => {}); }catch(e){} }
 try{ if(NATURAL_VOICE && /^https?:$/.test(location.protocol) && !/claude\.ai|claudeusercontent|anthropic/.test(location.hostname)) fetch('/api/health').then(r => r.ok ? r.json() : null).then(j => { if(j && j.tts){ EL_TTS.ok = true; EL_TTS.cache = !!j.cache; } }).catch(() => {}); }catch(e){}
 // true when this device has a voice for the current language (never read Romanian with an English voice)
-function langVoiceOK(){ if(naturalOn()) return true; if(!window.speechSynthesis) return false; loadVoices(); if(!VOICES.length) return true; return voicesFor(LANG === 'ro' ? 'ro' : 'en').length > 0; }
+// The Romanian voice is switched off until a server voice (same for everyone) is ready.
+const RO_VOICE = false;
+function langVoiceOK(){ if(naturalOn()) return true; if(LANG === 'ro' && !RO_VOICE) return false; if(!window.speechSynthesis) return false; loadVoices(); if(!VOICES.length) return true; return voicesFor(LANG === 'ro' ? 'ro' : 'en').length > 0; }
 function noVoiceNotice(){
+  if(LANG === 'ro' && !RO_VOICE) return;
   if(noVoiceNotice.shown === LANG) return; noVoiceNotice.shown = LANG;
   let el = document.getElementById('noVoice'); if(!el){ el = document.createElement('div'); el.id = 'noVoice'; el.className = 'no-voice'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
   el.innerHTML = '<b>' + t('nvTitle') + '</b><p>' + t('nvBody') + '</p><button class="btn small" type="button">' + t('nvOk') + '</button>';
@@ -6522,7 +6528,7 @@ async function askProf(o){
   const lvl = ['Beginner (about age 8-11): very simple words, short sentences, no chemical formulas', 'Explorer (about age 11-14): simple science words like atoms, ions and word equations are fine', 'Scientist (age 14+): formulas and balanced equations are fine'][LEVEL];
   const contents = B.items.length ? [...new Set(B.items.map(i => SPECIES[i.id].n.en))].join(', ') : 'nothing (empty)';
   const last = LAST[0] && LAST[0].kind === 'rule' ? LAST[0].rule.title.en + ' - ' + (LAST[0].rule.e ? LAST[0].rule.e.en : '') : 'no reaction yet';
-  const prompt = (LANG === 'ro' ? 'You are Profesoara Iona, the warm, enthusiastic woman chemistry teacher character in "Atom Bench", a virtual chemistry lab for children. When you refer to yourself in Romanian, use feminine forms.' : 'You are Professor Ion, the warm, enthusiastic chemistry teacher character in "Atom Bench", a virtual chemistry lab for children.') + ' Answer the child\'s question.\n' +
+  const prompt = (LANG === 'ro' ? 'You are Profesorul Ion, the warm, enthusiastic chemistry teacher character in "Atom Bench", a virtual chemistry lab for children. When you refer to yourself in Romanian, use masculine forms.' : 'You are Professor Ion, the warm, enthusiastic chemistry teacher character in "Atom Bench", a virtual chemistry lab for children.') + ' Answer the child\'s question.\n' +
     'Rules:\n- Reply in ' + (LANG === 'ro' ? 'Romanian (with correct diacritics)' : 'English') + '.\n- Level: ' + lvl + '.\n- 2 to 5 short sentences. Be accurate and encouraging.\n' +
     '- Never give step-by-step instructions, amounts or sources for making fire, explosions, poisonous gases or dangerous substances at home. For lab-only chemicals, say only trained chemists do that in a real lab, and that this virtual lab is safe for trying.\n' +
     '- If the question is not about science, kindly steer back to chemistry.\n- Plain text only: no markdown, no lists, no emojis.\n\n' +
@@ -6545,7 +6551,7 @@ Object.assign(S, {
   tabCourse:L('Classes','Lecții'),
   lessonsDone:L('{n} of {total} lessons done','{n} din {total} lecții terminate'), continueFlow:L('Continue the course','Continuă cursul'), agesN:L('ages {a}','vârsta {a}'),
   stageN:L('Stage {n}','Etapa {n}'), prereq:L('Recommended first','Recomandat înainte'), prereqTxt:L('This lesson builds on “{title}”.','Această lecție se bazează pe „{title}”.'),
-  courseTitle:L('Professor Ion’s chemistry course','Cursul de chimie al Profesoarei Iona'),
+  courseTitle:L('Professor Ion’s chemistry course','Cursul de chimie al Profesorului Ion'),
   recommended:L('For your level','Pentru nivelul tău'),
   lessonN:L('Lesson {n}','Lecția {n}'),
   slideOf:L('{n} / {total}','{n} / {total}'),
@@ -6556,7 +6562,7 @@ Object.assign(S, {
   quizDone:L('Lesson complete! You got {n} of {total}.','Lecție terminată! Ai răspuns corect la {n} din {total}.'),
   retry:L('Try the quiz again','Reia testul'), nextLesson:L('Next lesson','Lecția următoare'), restartLesson:L('Watch again','Privește din nou'),
   keyWords:L('Key words','Cuvinte-cheie'), tryIt:L('Try it yourself','Încearcă singur'), go:L('Go','Mergi'),
-  askLesson:L('Still curious? Ask Professor Ion','Încă ești curios? Întreab-o pe Profesoara Iona'),
+  askLesson:L('Still curious? Ask Professor Ion','Încă ești curios? Întreabă-l pe Profesorul Ion'),
   refresher:L('Learn the basics: {title}','Învață noțiunile de bază: {title}'),
   skipLab:L('Skip to the lab','Sari la laborator'), pause:L('Pause','Pauză'), play:L('Play','Continuă'), repeat:L('Repeat','Repetă'),
   tapToHear:L('Tap anywhere to hear me speak','Atinge oriunde ca să mă auzi vorbind'),
@@ -6899,8 +6905,8 @@ function introSlide(l){
   const en = is101 ? 'Welcome to my class, Chemistry 101! I’m Professor Ion. In this lesson, “{title}”, here is what we will learn: {topics}. Let’s begin!'
     : first ? 'Welcome to my chemistry class! I’m Professor Ion. This lesson is from {stage}: “{title}”. Here is what we will learn: {topics}. Let’s begin!'
     : 'Today’s lesson is “{title}”. Here is what we will learn: {topics}. Let’s begin!';
-  const ro = is101 ? 'Bun venit la ora mea, Chimie 101! Eu sunt Profesoara Iona. În această lecție, „{title}”, iată ce vom învăța: {topics}. Să începem!'
-    : first ? 'Bun venit la ora mea de chimie! Eu sunt Profesoara Iona. Lecția aceasta este din {stage}: „{title}”. Iată ce vom învăța: {topics}. Să începem!'
+  const ro = is101 ? 'Bun venit la ora mea, Chimie 101! Eu sunt Profesorul Ion. În această lecție, „{title}”, iată ce vom învăța: {topics}. Să începem!'
+    : first ? 'Bun venit la ora mea de chimie! Eu sunt Profesorul Ion. Lecția aceasta este din {stage}: „{title}”. Iată ce vom învăța: {topics}. Să începem!'
     : 'Lecția de azi este „{title}”. Iată ce vom învăța: {topics}. Să începem!';
   return {v:{type:'title'}, h:is101 ? L('Welcome to Chemistry 101!','Bun venit la Chimie 101!') : first ? L('Welcome to class!','Bun venit la oră!') : L('Welcome back to class!','Bine ai revenit la oră!'),
     t:L(fill(en, {title:l.title.en, topics:T, stage:sgEn}), fill(ro, {title:l.title.ro, topics:TR, stage:sgRo}))};
@@ -6945,7 +6951,7 @@ function narrate(){
   } else CR.timer = setTimeout(done, readingMs(txt));
   updateTapHint();
 }
-function updateTapHint(){ const h = $('#tapHint'); if(h) h.hidden = !(SPEAK && window.speechSynthesis && !USER_GESTURE && TAB === 'course'); }
+function updateTapHint(){ const h = $('#tapHint'); if(h) h.hidden = !(SPEAK && window.speechSynthesis && !USER_GESTURE && TAB === 'course' && !(LANG === 'ro' && typeof RO_VOICE !== 'undefined' && !RO_VOICE)); }
 function updatePlayBtn(){ const b = $('#lessonPlay'); if(!b) return; b.setAttribute('aria-pressed', String(!CR.paused)); b.querySelector('span').textContent = t(CR.paused ? 'play' : 'pause'); b.querySelector('.ic-pause').style.display = CR.paused ? 'none' : ''; b.querySelector('.ic-play').style.display = CR.paused ? '' : 'none'; }
 function pauseLesson(){ CR.paused = true; CR.token++; clearTimeout(CR.timer); clearTimeout(CR.fallback); stopSpeak(); clearInterval(CR.typing); const s = curSlide(); if(s && CR.mode === 'slides') $('#lessonText').firstChild.textContent = tr(s.t); $('#lessonTalk').classList.remove('talking'); updatePlayBtn(); }
 function playLesson(){ CR.paused = false; updatePlayBtn(); narrate(); }
@@ -8077,10 +8083,10 @@ const INTRO_T = {
   chooseLevel:L('Choose your level','Alege nivelul'),
   lvlAges:[L('ages 8–11','8–11 ani'), L('ages 11–14','11–14 ani'), L('ages 14–18','14–18 ani')],
   language:L('Language','Limba'),
-  teachers:L('Your teachers','Profesorii tăi'),
-  teachersNote:L('The voice and the teacher follow the language you choose.','Vocea și profesorul se schimbă după limba aleasă.'),
-  ionName:'Professor Ion', ionaName:'Profesoara Iona',
-  ionRole:L('Teaches in English','Predă în engleză'), ionaRole:L('Teaches in Romanian','Predă în română'),
+  teachers:L('Your teacher','Profesorul tău'),
+  teachersNote:L('Professor Ion reads the lessons aloud in English. In Romanian, lessons are text only for now: a natural Romanian voice is coming soon.','Profesorul Ion citește lecțiile cu voce tare în engleză. În română, deocamdată lecțiile sunt doar text: o voce românească naturală vine în curând.'),
+  ionName:L('Professor Ion','Profesorul Ion'), ionaName:'Profesoara Iona',
+  ionRole:L('Teaches in English and Romanian','Predă în engleză și română'), ionaRole:L('Teaches in Romanian','Predă în română'),
   ionLine:L('“Hi! I’m named after the ions. Let’s find out what everything is made of!”','„Salut! Numele meu vine de la ioni. Hai să aflăm din ce e făcut totul!”'),
   ionaLine:L('“Hello! I’ll take you step by step, with real experiments.”','„Bună! Te învăț chimie pas cu pas, cu experimente adevărate.”'),
   curriculum:L('The curriculum','Programa'),
@@ -8188,12 +8194,12 @@ function bindIntro(){
 
 // ===================== teacher voice settings =====================
 Object.assign(S, {
-  voiceBtn:L('Voice','Voce'), vTitle:L('The teacher’s voice','Vocea profesoarei'), vVoice:L('Voice','Voce'), vLively:L('Speaking style','Stil de vorbire'),
+  voiceBtn:L('Voice','Voce'), vTitle:L('The teacher’s voice','Vocea profesorului'), vVoice:L('Voice','Voce'), vLively:L('Speaking style','Stil de vorbire'),
   vCalm:L('Calm','Calm'), vLivelyOpt:L('Lively','Energic'), vVery:L('Very lively','Foarte energic'), vSpeed:L('Speed','Viteză'), vTest:L('Test the voice','Testează vocea'),
-  vNatural:L('Natural voice (ElevenLabs)','Voce naturală (ElevenLabs)'), vNaturalB:L('Professor Ion speaks with George’s voice, Profesoara Iona with Matilda’s. It may take a second to start.','Profesorul Ion vorbește cu vocea lui George, Profesoara Iona cu vocea Matildei. Poate dura o secundă până începe.'), vOn:L('On','Pornit'), vOff:L('Off','Oprit'),
+  vNatural:L('Natural voice (ElevenLabs)','Voce naturală (ElevenLabs)'), vNaturalB:L('Professor Ion speaks with George’s voice in English and Matilda’s in Romanian. It may take a second to start.','Profesorul Ion vorbește cu vocea lui George în engleză și a Matildei în română. Poate dura o secundă până începe.'), vOn:L('On','Pornit'), vOff:L('Off','Oprit'),
   vBest:L('best','cea mai bună'), vNone:L('No voice for this language is installed on this device.','Pe acest dispozitiv nu este instalată nicio voce pentru această limbă.'),
   vTip:L('Tip: the most natural voices are the “Natural” or “Online” voices in Microsoft Edge (for example Ryan or Alina) and the Google voices in Chrome. Voices come from your browser and device.','Sfat: cele mai naturale voci sunt vocile „Natural” sau „Online” din Microsoft Edge (de exemplu Alina sau Emil) și vocile Google din Chrome. Vocile vin din browserul și dispozitivul tău.'),
-  vSample:L('Hello! I’m Professor Ion. Chemistry is everywhere around us, and today we’re going to discover something amazing! Are you ready?','Bună! Eu sunt Profesoara Iona. Chimia este peste tot în jurul nostru, iar azi vom descoperi ceva uimitor! Ești gata?'),
+  vSample:L('Hello! I’m Professor Ion. Chemistry is everywhere around us, and today we’re going to discover something amazing! Are you ready?','Bună! Eu sunt Profesorul Ion. Chimia este peste tot în jurul nostru, iar azi vom descoperi ceva uimitor! Ești gata?'),
 });
 function renderVoicePanel(){
   const el = $('#voicePanel'); const want = LANG === 'ro' ? 'ro' : 'en'; loadVoices(); const list = voicesFor(want); const cur = pickVoice();

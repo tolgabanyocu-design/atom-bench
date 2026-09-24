@@ -3,7 +3,7 @@ Object.assign(S, {
   tabCourse:L('Classes','Lecții'),
   lessonsDone:L('{n} of {total} lessons done','{n} din {total} lecții terminate'), continueFlow:L('Continue the course','Continuă cursul'), agesN:L('ages {a}','vârsta {a}'),
   stageN:L('Stage {n}','Etapa {n}'), prereq:L('Recommended first','Recomandat înainte'), prereqTxt:L('This lesson builds on “{title}”.','Această lecție se bazează pe „{title}”.'),
-  courseTitle:L('Professor Ion’s chemistry course','Cursul de chimie al Profesoarei Iona'),
+  courseTitle:L('Professor Ion’s chemistry course','Cursul de chimie al Profesorului Ion'),
   recommended:L('For your level','Pentru nivelul tău'),
   lessonN:L('Lesson {n}','Lecția {n}'),
   slideOf:L('{n} / {total}','{n} / {total}'),
@@ -14,7 +14,7 @@ Object.assign(S, {
   quizDone:L('Lesson complete! You got {n} of {total}.','Lecție terminată! Ai răspuns corect la {n} din {total}.'),
   retry:L('Try the quiz again','Reia testul'), nextLesson:L('Next lesson','Lecția următoare'), restartLesson:L('Watch again','Privește din nou'),
   keyWords:L('Key words','Cuvinte-cheie'), tryIt:L('Try it yourself','Încearcă singur'), go:L('Go','Mergi'),
-  askLesson:L('Still curious? Ask Professor Ion','Încă ești curios? Întreab-o pe Profesoara Iona'),
+  askLesson:L('Still curious? Ask Professor Ion','Încă ești curios? Întreabă-l pe Profesorul Ion'),
   refresher:L('Learn the basics: {title}','Învață noțiunile de bază: {title}'),
   skipLab:L('Skip to the lab','Sari la laborator'), pause:L('Pause','Pauză'), play:L('Play','Continuă'), repeat:L('Repeat','Repetă'),
   tapToHear:L('Tap anywhere to hear me speak','Atinge oriunde ca să mă auzi vorbind'),
@@ -357,8 +357,8 @@ function introSlide(l){
   const en = is101 ? 'Welcome to my class, Chemistry 101! I’m Professor Ion. In this lesson, “{title}”, here is what we will learn: {topics}. Let’s begin!'
     : first ? 'Welcome to my chemistry class! I’m Professor Ion. This lesson is from {stage}: “{title}”. Here is what we will learn: {topics}. Let’s begin!'
     : 'Today’s lesson is “{title}”. Here is what we will learn: {topics}. Let’s begin!';
-  const ro = is101 ? 'Bun venit la ora mea, Chimie 101! Eu sunt Profesoara Iona. În această lecție, „{title}”, iată ce vom învăța: {topics}. Să începem!'
-    : first ? 'Bun venit la ora mea de chimie! Eu sunt Profesoara Iona. Lecția aceasta este din {stage}: „{title}”. Iată ce vom învăța: {topics}. Să începem!'
+  const ro = is101 ? 'Bun venit la ora mea, Chimie 101! Eu sunt Profesorul Ion. În această lecție, „{title}”, iată ce vom învăța: {topics}. Să începem!'
+    : first ? 'Bun venit la ora mea de chimie! Eu sunt Profesorul Ion. Lecția aceasta este din {stage}: „{title}”. Iată ce vom învăța: {topics}. Să începem!'
     : 'Lecția de azi este „{title}”. Iată ce vom învăța: {topics}. Să începem!';
   return {v:{type:'title'}, h:is101 ? L('Welcome to Chemistry 101!','Bun venit la Chimie 101!') : first ? L('Welcome to class!','Bun venit la oră!') : L('Welcome back to class!','Bine ai revenit la oră!'),
     t:L(fill(en, {title:l.title.en, topics:T, stage:sgEn}), fill(ro, {title:l.title.ro, topics:TR, stage:sgRo}))};
@@ -403,7 +403,7 @@ function narrate(){
   } else CR.timer = setTimeout(done, readingMs(txt));
   updateTapHint();
 }
-function updateTapHint(){ const h = $('#tapHint'); if(h) h.hidden = !(SPEAK && window.speechSynthesis && !USER_GESTURE && TAB === 'course'); }
+function updateTapHint(){ const h = $('#tapHint'); if(h) h.hidden = !(SPEAK && window.speechSynthesis && !USER_GESTURE && TAB === 'course' && !(LANG === 'ro' && typeof RO_VOICE !== 'undefined' && !RO_VOICE)); }
 function updatePlayBtn(){ const b = $('#lessonPlay'); if(!b) return; b.setAttribute('aria-pressed', String(!CR.paused)); b.querySelector('span').textContent = t(CR.paused ? 'play' : 'pause'); b.querySelector('.ic-pause').style.display = CR.paused ? 'none' : ''; b.querySelector('.ic-play').style.display = CR.paused ? '' : 'none'; }
 function pauseLesson(){ CR.paused = true; CR.token++; clearTimeout(CR.timer); clearTimeout(CR.fallback); stopSpeak(); clearInterval(CR.typing); const s = curSlide(); if(s && CR.mode === 'slides') $('#lessonText').firstChild.textContent = tr(s.t); $('#lessonTalk').classList.remove('talking'); updatePlayBtn(); }
 function playLesson(){ CR.paused = false; updatePlayBtn(); narrate(); }
