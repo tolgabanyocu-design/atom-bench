@@ -1,0 +1,9 @@
+name = "atom-bench"
+main = "src/worker.js"
+compatibility_date = "2026-09-01"
+
+# The website files (index.html) are served from ./public
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]

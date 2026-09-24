@@ -1,0 +1,6 @@
+node_modules/
+.wrangler/
+.dev.vars
+*.log
+key*.txt
+deploy-keys*.txt

@@ -1,0 +1,12 @@
+{
+  "name": "atom-bench",
+  "private": true,
+  "scripts": {
+    "build": "bash app/build.sh",
+    "dev": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.139.0"
+  }
+}
