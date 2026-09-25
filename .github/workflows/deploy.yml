@@ -23,6 +23,11 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - name: Prepare voice cache (KV)
+        run: node scripts/ensure-kv.mjs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       - name: Deploy with Wrangler
         id: deploy
         uses: cloudflare/wrangler-action@v3
@@ -30,3 +35,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           packageManager: npm
+          secrets: |
+            AZURE_SPEECH_KEY
+        env:
+          AZURE_SPEECH_KEY: ${{ secrets.AZURE_SPEECH_KEY }}

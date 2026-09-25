@@ -12,7 +12,7 @@ const INTRO_T = {
   lvlAges:[L('ages 8–11','8–11 ani'), L('ages 11–14','11–14 ani'), L('ages 14–18','14–18 ani')],
   language:L('Language','Limba'),
   teachers:L('Your teacher','Profesorul tău'),
-  teachersNote:L('Professor Ion reads the lessons aloud in English. In Romanian, lessons are text only for now: a natural Romanian voice is coming soon.','Profesorul Ion citește lecțiile cu voce tare în engleză. În română, deocamdată lecțiile sunt doar text: o voce românească naturală vine în curând.'),
+  teachersNote:L('Professor Ion reads every lesson aloud with a natural voice, in English and in Romanian.','Profesorul Ion citește fiecare lecție cu o voce naturală, în engleză și în română.'),
   ionName:L('Professor Ion','Profesorul Ion'), ionaName:'Profesoara Iona',
   ionRole:L('Teaches in English and Romanian','Predă în engleză și română'), ionaRole:L('Teaches in Romanian','Predă în română'),
   ionLine:L('“Hi! I’m named after the ions. Let’s find out what everything is made of!”','„Salut! Numele meu vine de la ioni. Hai să aflăm din ce e făcut totul!”'),

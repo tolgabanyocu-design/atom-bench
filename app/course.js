@@ -403,7 +403,7 @@ function narrate(){
   } else CR.timer = setTimeout(done, readingMs(txt));
   updateTapHint();
 }
-function updateTapHint(){ const h = $('#tapHint'); if(h) h.hidden = !(SPEAK && window.speechSynthesis && !USER_GESTURE && TAB === 'course' && !(LANG === 'ro' && typeof RO_VOICE !== 'undefined' && !RO_VOICE)); }
+function updateTapHint(){ const h = $('#tapHint'); if(h) h.hidden = !(SPEAK && window.speechSynthesis && !USER_GESTURE && TAB === 'course' && !(LANG === 'ro' && typeof RO_VOICE !== 'undefined' && !RO_VOICE && !naturalOn())); }
 function updatePlayBtn(){ const b = $('#lessonPlay'); if(!b) return; b.setAttribute('aria-pressed', String(!CR.paused)); b.querySelector('span').textContent = t(CR.paused ? 'play' : 'pause'); b.querySelector('.ic-pause').style.display = CR.paused ? 'none' : ''; b.querySelector('.ic-play').style.display = CR.paused ? '' : 'none'; }
 function pauseLesson(){ CR.paused = true; CR.token++; clearTimeout(CR.timer); clearTimeout(CR.fallback); stopSpeak(); clearInterval(CR.typing); const s = curSlide(); if(s && CR.mode === 'slides') $('#lessonText').firstChild.textContent = tr(s.t); $('#lessonTalk').classList.remove('talking'); updatePlayBtn(); }
 function playLesson(){ CR.paused = false; updatePlayBtn(); narrate(); }

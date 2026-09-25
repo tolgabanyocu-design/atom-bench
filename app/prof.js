@@ -179,16 +179,16 @@ Object.assign(S, {nvTitle:L('No voice for this language on this device','Nu exis
   nvBody:L('The lesson continues with text only. To hear the teacher, open Atom Bench in Microsoft Edge (it has natural online voices), or add a voice for this language in your device’s speech settings.','Lecția continuă doar cu text, ca profesorul să nu citească româna cu o voce englezească. Ca să-l auzi, deschide Atom Bench în Microsoft Edge (are voci românești naturale, de exemplu Alina), sau adaugă limba română în setările de vorbire ale dispozitivului (Windows: Setări → Oră și limbă → Vorbire → Adaugă voci → Română).'),
   nvOk:L('OK','Am înțeles')});
 let SPEAK_ID = 0;
-// ---------- natural voice (ElevenLabs via the website's /api/tts endpoint) ----------
-// Only available when the app runs on its own website (Cloudflare Worker holds the key). Falls back to the browser voice.
-// ElevenLabs voice is parked for now (cost). Set NATURAL_VOICE = true and re-add /api/tts on the server to bring it back.
-const NATURAL_VOICE = false;
+// ---------- natural voice (Azure Speech via the website's /api/tts endpoint) ----------
+// Only available when the app runs on its own website (the Cloudflare Worker holds the key). English falls back to the browser voice; Romanian stays text-only.
+// Natural voice: made on the website's server (Azure Speech), the same for every visitor.
+const NATURAL_VOICE = true;
 const EL_TTS = {ok:false, cache:false, audio:null, fails:0};
 function naturalOn(){ return EL_TTS.ok && VOICE_CFG.natural !== false && EL_TTS.fails < 3; }
 function ttsClean(text){ return text.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, 2400); }
 function ttsUrl(text, lang){ return '/api/tts?lang=' + (lang || (LANG === 'ro' ? 'ro' : 'en')) + '&t=' + encodeURIComponent(ttsClean(text)); }
 function ttsPrefetch(text){ if(!naturalOn() || !EL_TTS.cache || !text || !USER_GESTURE) return; try{ fetch(ttsUrl(text)).catch(() => {}); }catch(e){} }
-try{ if(NATURAL_VOICE && /^https?:$/.test(location.protocol) && !/claude\.ai|claudeusercontent|anthropic/.test(location.hostname)) fetch('/api/health').then(r => r.ok ? r.json() : null).then(j => { if(j && j.tts){ EL_TTS.ok = true; EL_TTS.cache = !!j.cache; } }).catch(() => {}); }catch(e){}
+try{ if(NATURAL_VOICE && /^https?:$/.test(location.protocol) && !/claude\.ai|claudeusercontent|anthropic/.test(location.hostname)) fetch('/api/health').then(r => r.ok ? r.json() : null).then(j => { if(j && j.tts){ EL_TTS.ok = true; EL_TTS.cache = !!j.cache; document.documentElement.classList.add('nat'); } }).catch(() => {}); }catch(e){}
 // true when this device has a voice for the current language (never read Romanian with an English voice)
 // The Romanian voice is switched off until a server voice (same for everyone) is ready.
 const RO_VOICE = false;

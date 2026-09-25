@@ -7,3 +7,13 @@ compatibility_date = "2026-09-01"
 directory = "./public"
 binding = "ASSETS"
 run_worker_first = ["/api/*"]
+
+# Saved voice clips (each sentence is generated once). The deploy workflow fills in the id.
+[[kv_namespaces]]
+binding = "AUDIO"
+id = "__KV_AUDIO_ID__"
+
+[vars]
+AZURE_SPEECH_REGION = "swedencentral"
+VOICE_EN = "en-GB-RyanNeural"   # Professor Ion in English
+VOICE_RO = "ro-RO-EmilNeural"   # Profesorul Ion in Romanian (native voice)

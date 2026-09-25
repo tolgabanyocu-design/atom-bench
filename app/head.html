@@ -381,7 +381,7 @@ button{font:inherit;color:inherit}
 /* v4: teacher per language, lesson controls */
 /* one teacher for now: Professor Ion in both languages */
 .fem{display:none}
-html[lang="ro"] #lessonSpeak,html[lang="ro"] #voiceBtn,html[lang="ro"] #profSpeak,html[lang="ro"] #tapHint{display:none!important}
+html[lang="ro"]:not(.nat) #lessonSpeak,html[lang="ro"]:not(.nat) #voiceBtn,html[lang="ro"]:not(.nat) #profSpeak,html[lang="ro"]:not(.nat) #tapHint{display:none!important}
 .intro-modal .t-iona{display:none!important}
 .intro-modal .ic-teacher.t-ion{grid-column:1/-1;justify-self:center;max-width:340px;width:100%}
 .lesson-box{position:relative}

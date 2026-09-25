@@ -387,7 +387,7 @@ button{font:inherit;color:inherit}
 /* v4: teacher per language, lesson controls */
 /* one teacher for now: Professor Ion in both languages */
 .fem{display:none}
-html[lang="ro"] #lessonSpeak,html[lang="ro"] #voiceBtn,html[lang="ro"] #profSpeak,html[lang="ro"] #tapHint{display:none!important}
+html[lang="ro"]:not(.nat) #lessonSpeak,html[lang="ro"]:not(.nat) #voiceBtn,html[lang="ro"]:not(.nat) #profSpeak,html[lang="ro"]:not(.nat) #tapHint{display:none!important}
 .intro-modal .t-iona{display:none!important}
 .intro-modal .ic-teacher.t-ion{grid-column:1/-1;justify-self:center;max-width:340px;width:100%}
 .lesson-box{position:relative}
@@ -6438,16 +6438,16 @@ Object.assign(S, {nvTitle:L('No voice for this language on this device','Nu exis
   nvBody:L('The lesson continues with text only. To hear the teacher, open Atom Bench in Microsoft Edge (it has natural online voices), or add a voice for this language in your device’s speech settings.','Lecția continuă doar cu text, ca profesorul să nu citească româna cu o voce englezească. Ca să-l auzi, deschide Atom Bench în Microsoft Edge (are voci românești naturale, de exemplu Alina), sau adaugă limba română în setările de vorbire ale dispozitivului (Windows: Setări → Oră și limbă → Vorbire → Adaugă voci → Română).'),
   nvOk:L('OK','Am înțeles')});
 let SPEAK_ID = 0;
-// ---------- natural voice (ElevenLabs via the website's /api/tts endpoint) ----------
-// Only available when the app runs on its own website (Cloudflare Worker holds the key). Falls back to the browser voice.
-// ElevenLabs voice is parked for now (cost). Set NATURAL_VOICE = true and re-add /api/tts on the server to bring it back.
-const NATURAL_VOICE = false;
+// ---------- natural voice (Azure Speech via the website's /api/tts endpoint) ----------
+// Only available when the app runs on its own website (the Cloudflare Worker holds the key). English falls back to the browser voice; Romanian stays text-only.
+// Natural voice: made on the website's server (Azure Speech), the same for every visitor.
+const NATURAL_VOICE = true;
 const EL_TTS = {ok:false, cache:false, audio:null, fails:0};
 function naturalOn(){ return EL_TTS.ok && VOICE_CFG.natural !== false && EL_TTS.fails < 3; }
 function ttsClean(text){ return text.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, 2400); }
 function ttsUrl(text, lang){ return '/api/tts?lang=' + (lang || (LANG === 'ro' ? 'ro' : 'en')) + '&t=' + encodeURIComponent(ttsClean(text)); }
 function ttsPrefetch(text){ if(!naturalOn() || !EL_TTS.cache || !text || !USER_GESTURE) return; try{ fetch(ttsUrl(text)).catch(() => {}); }catch(e){} }
-try{ if(NATURAL_VOICE && /^https?:$/.test(location.protocol) && !/claude\.ai|claudeusercontent|anthropic/.test(location.hostname)) fetch('/api/health').then(r => r.ok ? r.json() : null).then(j => { if(j && j.tts){ EL_TTS.ok = true; EL_TTS.cache = !!j.cache; } }).catch(() => {}); }catch(e){}
+try{ if(NATURAL_VOICE && /^https?:$/.test(location.protocol) && !/claude\.ai|claudeusercontent|anthropic/.test(location.hostname)) fetch('/api/health').then(r => r.ok ? r.json() : null).then(j => { if(j && j.tts){ EL_TTS.ok = true; EL_TTS.cache = !!j.cache; document.documentElement.classList.add('nat'); } }).catch(() => {}); }catch(e){}
 // true when this device has a voice for the current language (never read Romanian with an English voice)
 // The Romanian voice is switched off until a server voice (same for everyone) is ready.
 const RO_VOICE = false;
@@ -6951,7 +6951,7 @@ function narrate(){
   } else CR.timer = setTimeout(done, readingMs(txt));
   updateTapHint();
 }
-function updateTapHint(){ const h = $('#tapHint'); if(h) h.hidden = !(SPEAK && window.speechSynthesis && !USER_GESTURE && TAB === 'course' && !(LANG === 'ro' && typeof RO_VOICE !== 'undefined' && !RO_VOICE)); }
+function updateTapHint(){ const h = $('#tapHint'); if(h) h.hidden = !(SPEAK && window.speechSynthesis && !USER_GESTURE && TAB === 'course' && !(LANG === 'ro' && typeof RO_VOICE !== 'undefined' && !RO_VOICE && !naturalOn())); }
 function updatePlayBtn(){ const b = $('#lessonPlay'); if(!b) return; b.setAttribute('aria-pressed', String(!CR.paused)); b.querySelector('span').textContent = t(CR.paused ? 'play' : 'pause'); b.querySelector('.ic-pause').style.display = CR.paused ? 'none' : ''; b.querySelector('.ic-play').style.display = CR.paused ? '' : 'none'; }
 function pauseLesson(){ CR.paused = true; CR.token++; clearTimeout(CR.timer); clearTimeout(CR.fallback); stopSpeak(); clearInterval(CR.typing); const s = curSlide(); if(s && CR.mode === 'slides') $('#lessonText').firstChild.textContent = tr(s.t); $('#lessonTalk').classList.remove('talking'); updatePlayBtn(); }
 function playLesson(){ CR.paused = false; updatePlayBtn(); narrate(); }
@@ -8084,7 +8084,7 @@ const INTRO_T = {
   lvlAges:[L('ages 8–11','8–11 ani'), L('ages 11–14','11–14 ani'), L('ages 14–18','14–18 ani')],
   language:L('Language','Limba'),
   teachers:L('Your teacher','Profesorul tău'),
-  teachersNote:L('Professor Ion reads the lessons aloud in English. In Romanian, lessons are text only for now: a natural Romanian voice is coming soon.','Profesorul Ion citește lecțiile cu voce tare în engleză. În română, deocamdată lecțiile sunt doar text: o voce românească naturală vine în curând.'),
+  teachersNote:L('Professor Ion reads every lesson aloud with a natural voice, in English and in Romanian.','Profesorul Ion citește fiecare lecție cu o voce naturală, în engleză și în română.'),
   ionName:L('Professor Ion','Profesorul Ion'), ionaName:'Profesoara Iona',
   ionRole:L('Teaches in English and Romanian','Predă în engleză și română'), ionaRole:L('Teaches in Romanian','Predă în română'),
   ionLine:L('“Hi! I’m named after the ions. Let’s find out what everything is made of!”','„Salut! Numele meu vine de la ioni. Hai să aflăm din ce e făcut totul!”'),
@@ -8196,7 +8196,7 @@ function bindIntro(){
 Object.assign(S, {
   voiceBtn:L('Voice','Voce'), vTitle:L('The teacher’s voice','Vocea profesorului'), vVoice:L('Voice','Voce'), vLively:L('Speaking style','Stil de vorbire'),
   vCalm:L('Calm','Calm'), vLivelyOpt:L('Lively','Energic'), vVery:L('Very lively','Foarte energic'), vSpeed:L('Speed','Viteză'), vTest:L('Test the voice','Testează vocea'),
-  vNatural:L('Natural voice (ElevenLabs)','Voce naturală (ElevenLabs)'), vNaturalB:L('Professor Ion speaks with George’s voice in English and Matilda’s in Romanian. It may take a second to start.','Profesorul Ion vorbește cu vocea lui George în engleză și a Matildei în română. Poate dura o secundă până începe.'), vOn:L('On','Pornit'), vOff:L('Off','Oprit'),
+  vNatural:L('Natural voice','Voce naturală'), vNaturalB:L('Professor Ion’s natural voice, the same on every device. It may take a second to start.','Vocea naturală a Profesorului Ion, la fel pe orice dispozitiv. Poate dura o secundă până începe.'), vOn:L('On','Pornit'), vOff:L('Off','Oprit'),
   vBest:L('best','cea mai bună'), vNone:L('No voice for this language is installed on this device.','Pe acest dispozitiv nu este instalată nicio voce pentru această limbă.'),
   vTip:L('Tip: the most natural voices are the “Natural” or “Online” voices in Microsoft Edge (for example Ryan or Alina) and the Google voices in Chrome. Voices come from your browser and device.','Sfat: cele mai naturale voci sunt vocile „Natural” sau „Online” din Microsoft Edge (de exemplu Alina sau Emil) și vocile Google din Chrome. Vocile vin din browserul și dispozitivul tău.'),
   vSample:L('Hello! I’m Professor Ion. Chemistry is everywhere around us, and today we’re going to discover something amazing! Are you ready?','Bună! Eu sunt Profesorul Ion. Chimia este peste tot în jurul nostru, iar azi vom descoperi ceva uimitor! Ești gata?'),

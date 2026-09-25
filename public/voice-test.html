@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Atom Bench voice test</title>
+<style>
+:root{--ink:#16252E;--muted:#56666D;--line:#d9e3df;--acc:#1A74B3;--bg:#eef2f1}
+body{margin:0;background:var(--bg);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink)}
+main{max-width:860px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:26px;margin:0 0 4px}p.sub{color:var(--muted);margin:0 0 20px}
+section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:16px}
+h2{font-size:18px;margin:0 0 8px}textarea{width:100%;box-sizing:border-box;min-height:110px;font:inherit;padding:10px;border:1px solid var(--line);border-radius:10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+button{font:inherit;font-weight:700;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;cursor:pointer}
+button.on{background:var(--acc);color:#fff;border-color:var(--acc)}small{color:var(--muted)}
+#status{min-height:22px;color:var(--muted);font-weight:600}
+</style></head><body><main>
+<h1>Voice test</h1><p class="sub">Listen to the candidate voices for Professor Ion. Edit the text if you like, then tap a voice. (Each new sentence is generated once and then saved.)</p>
+<p id="status"></p>
+<section><h2>English</h2><textarea id="t-en">Hello, and welcome to my lab! I'm Professor Ion. Look closely at this beaker: when we drop the sodium into water, it fizzes, zooms around, and even catches fire! Why? Because sodium is desperate to give away one electron. Isn't chemistry amazing?</textarea><div class="row" id="v-en"></div></section>
+<section><h2>Română</h2><textarea id="t-ro">Bună și bine ai venit în laboratorul meu! Eu sunt Profesorul Ion. Uită-te atent la pahar: când punem sodiul în apă, sfârâie, aleargă de colo-colo și chiar ia foc! De ce? Pentru că sodiul abia așteaptă să cedeze un electron. Apa, H₂O, se descompune, iar hidrogenul se degajă. Nu-i așa că e minunată chimia?</textarea><div class="row" id="v-ro"></div></section>
+<p><small>Native Romanian voice: ro-RO-EmilNeural. The "Multilingual" voices are English/German/Italian voices that can also speak Romanian.</small></p>
+</main>
+<script>
+let audio = null;
+const st = document.getElementById('status');
+fetch('/api/test-voices').then(r => r.json()).then(V => {
+  for (const lang of ['en', 'ro']) {
+    const box = document.getElementById('v-' + lang);
+    V[lang].forEach(v => { const b = document.createElement('button'); b.textContent = v.replace(/Neural$/, '').replace(/^(\w\w-\w\w)-/, '$1 · '); b.onclick = () => play(lang, v, b); box.appendChild(b); });
+  }
+});
+function play(lang, v, b) {
+  if (audio) audio.pause();
+  document.querySelectorAll('button.on').forEach(x => x.classList.remove('on')); b.classList.add('on');
+  const t = document.getElementById('t-' + lang).value.trim();
+  st.textContent = 'Loading ' + v + '…';
+  audio = new Audio('/api/tts?lang=' + lang + '&v=' + encodeURIComponent(v) + '&t=' + encodeURIComponent(t));
+  audio.onplaying = () => st.textContent = 'Playing ' + v;
+  audio.onended = () => { st.textContent = ''; b.classList.remove('on'); };
+  audio.onerror = () => st.textContent = 'Could not play ' + v + ' (voice not available in this region?)';
+  audio.play().catch(() => {});
+}
+</script></body></html>
